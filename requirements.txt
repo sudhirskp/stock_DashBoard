@@ -1,6 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pandas
 yfinance
 numpy
 plotly
+python-multipart
+aiofiles

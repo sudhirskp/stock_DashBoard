@@ -89,7 +89,12 @@
             document.getElementById("title").innerText = symbol + " - Loading...";
             document.getElementById("plot").innerHTML = "";
 
-            const response = await fetch(`http://127.0.0.1:8000/data/${symbol}`);
+            // Use relative URL when deployed, localhost for local development
+            const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                ? 'http://127.0.0.1:8000' 
+                : window.location.origin;
+            
+            const response = await fetch(`${apiUrl}/data/${symbol}`);
             
             if (!response.ok) {
                 // Get the detailed error message from API
@@ -149,7 +154,7 @@
             document.getElementById("plot").innerHTML = `
                 <div style="color: red; padding: 20px;">
                     <strong>Error:</strong> ${error.message}<br>
-                    <small>Make sure the server is running at http://127.0.0.1:8000</small>
+                    <small>Make sure the server is running</small>
                 </div>
             `;
         }

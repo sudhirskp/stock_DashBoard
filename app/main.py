@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from app.data import fetch_stock_data
+import os
 
 app = FastAPI(
     title="Stock Data Intelligence API",
@@ -17,10 +20,18 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+# Serve static frontend files
+if os.path.exists("frontend"):
+    app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
 
 @app.get("/")
 def root():
-    return {"message": "Stock Data API is running"}
+    # Serve the frontend HTML if it exists
+    html_path = "frontend/index.html"
+    if os.path.exists(html_path):
+        return FileResponse(html_path)
+    return {"message": "Stock Data API is running. Visit /docs for API documentation."}
 
 #----------------------------------------------
 
