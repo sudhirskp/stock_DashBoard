@@ -1,7 +1,9 @@
 # 📊 Stock Data Intelligence Dashboard
+> This project was developed as part of an internship screening assignment to demonstrate backend development, data handling, and API design skills.
 
-A mini financial data platform built using **Python + FastAPI** that fetches, analyzes, and visualizes stock market data.
-This project demonstrates backend API design, data handling with Pandas, and a lightweight visualization dashboard.
+
+A mini financial data platform built using **Python and FastAPI** to fetch, analyze, and visualize stock market data.
+
 
 ---
 
@@ -176,6 +178,7 @@ The dashboard fetches live data from the FastAPI backend and plots it using **Pl
 * **yfinance** used for reliable public stock data
 * **Pandas** for efficient data cleaning and analysis
 * Simple frontend to keep focus on backend & data logic
+* APIs return clean JSON responses suitable for frontend consumption and external integrations.
 
 ---
 
