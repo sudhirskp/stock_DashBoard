@@ -198,3 +198,6 @@ The dashboard fetches live data from the FastAPI backend and plots it using **Pl
 
 **Sudhir Patel**
 Backend Development | Data Structures | APIs
+
+## License
+This project is licensed under the MIT License.
