@@ -108,6 +108,8 @@ Swagger UI:
 http://127.0.0.1:8000/docs
 ```
 
+![Swagger API Documentation](screenshot/swagger-overview.png)
+
 ---
 
 ## 🔌 API Endpoints
@@ -125,6 +127,8 @@ GET /data/{symbol}
 Example: /data/RELIANCE
 ```
 
+![Stock Data Response](screenshot/data-endpoint-response.png)
+
 ### 📌 Get stock summary (52-week)
 
 ```
@@ -132,11 +136,15 @@ GET /summary/{symbol}
 Example: /summary/TCS
 ```
 
+![Stock Summary](screenshot/summary-endpoint.png)
+
 ### 📌 Compare two stocks (Bonus)
 
 ```
 GET /compare?symbol1=RELIANCE&symbol2=TCS
 ```
+
+![Stock Comparison](screenshot/compare-endpoint.png)
 
 ---
 
@@ -155,6 +163,8 @@ frontend/index.html
 
 3. Click on any company name
 4. View the **closing price chart**
+
+![Stock Dashboard Visualization](screenshot/dashboard-chart.png)
 
 The dashboard fetches live data from the FastAPI backend and plots it using **Plotly**.
 
