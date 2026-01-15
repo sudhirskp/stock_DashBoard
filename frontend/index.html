@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data Dashboard</title>
+
+    <!-- Plotly CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        #sidebar {
+            width: 220px;
+            background: #f4f4f4;
+            padding: 15px;
+            border-right: 1px solid #ccc;
+        }
+
+        #sidebar h3 {
+            margin-top: 0;
+        }
+
+        .company {
+            padding: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .company:hover {
+            background: #eaeaea;
+        }
+
+        #chart {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h3>Enter Symbol</h3>
+    <input type="text" id="stockInput" placeholder="e.g., TCS, INFY" 
+           style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;"
+           onkeypress="if(event.key === 'Enter') searchStock()">
+    <button onclick="searchStock()" 
+            style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;">
+        Search
+    </button>
+    
+    <h3>Quick Select</h3>
+    <div class="company" onclick="loadStock('RELIANCE')">RELIANCE</div>
+    <div class="company" onclick="loadStock('TCS')">TCS</div>
+    <div class="company" onclick="loadStock('INFY')">INFY</div>
+    <div class="company" onclick="loadStock('HDFCBANK')">HDFCBANK</div>
+</div>
+
+<div id="chart">
+    <h2 id="title">Select a company</h2>
+    <div id="plot"></div>
+</div>
+
+<script>
+    function searchStock() {
+        const input = document.getElementById("stockInput");
+        const symbol = input.value.trim().toUpperCase();
+        
+        if (symbol) {
+            loadStock(symbol);
+            input.value = "";
+        } else {
+            alert("Please enter a stock symbol");
+        }
+    }
+
+    async function loadStock(symbol) {
+        try {
+            document.getElementById("title").innerText = symbol + " - Loading...";
+            document.getElementById("plot").innerHTML = "";
+
+            const response = await fetch(`http://127.0.0.1:8000/data/${symbol}`);
+            
+            if (!response.ok) {
+                // Get the detailed error message from API
+                const errorData = await response.json();
+                const errorMsg = errorData.detail || `HTTP error! status: ${response.status}`;
+                throw new Error(errorMsg);
+            }
+            
+            const data = await response.json();
+
+            if (!data.records || data.records.length === 0) {
+                document.getElementById("title").innerText = symbol + " - No data available";
+                return;
+            }
+
+            const records = data.records;
+
+            const dates = records.map(r => r.Date);
+            const closePrices = records.map(r => r.Close);
+            const movingAverage = records.map(r => r["7 Day MA"]);
+
+            const closeTrace = {
+                x: dates,
+                y: closePrices,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Close Price',
+                line: { color: '#1f77b4', width: 2 }
+            };
+
+            const maTrace = {
+                x: dates,
+                y: movingAverage,
+                type: 'scatter',
+                mode: 'lines',
+                name: '7-Day MA',
+                line: { color: '#ff7f0e', width: 2, dash: 'dash' }
+            };
+
+            const layout = {
+                title: symbol + " Stock Price (Last 30 Days)",
+                xaxis: { 
+                    title: "Date",
+                    type: 'date'
+                },
+                yaxis: { title: "Price (₹)" },
+                hovermode: 'x unified',
+                showlegend: true
+            };
+
+            Plotly.newPlot('plot', [closeTrace, maTrace], layout);
+            document.getElementById("title").innerText = symbol + " Stock Dashboard";
+
+        } catch (error) {
+            console.error("Error loading stock data:", error);
+            document.getElementById("title").innerText = symbol + " - Error loading data";
+            document.getElementById("plot").innerHTML = `
+                <div style="color: red; padding: 20px;">
+                    <strong>Error:</strong> ${error.message}<br>
+                    <small>Make sure the server is running at http://127.0.0.1:8000</small>
+                </div>
+            `;
+        }
+    }
+</script>
+
+</body>
+</html>
