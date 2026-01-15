@@ -1,6 +1,8 @@
 # 📊 Stock Data Intelligence Dashboard
 > This project was developed as part of an internship screening assignment to demonstrate backend development, data handling, and API design skills.
 
+## 🔗 Live Demo
+**🌐 [View Live Application](https://stock-dashboard-ld6o.onrender.com/)**
 
 A mini financial data platform built using **Python and FastAPI** to fetch, analyze, and visualize stock market data.
 
